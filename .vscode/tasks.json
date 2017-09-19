@@ -1,0 +1,76 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "install",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "go",
+            "args": [
+                "install",
+                "-v"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "build-darwin",
+            "options": {
+                "env": {
+                    "GOOS": "darwin",
+                    "GOARCH": "amd64"
+                }
+            },
+            "command": "go",
+            "args": [
+                "build",
+                "-v",
+                "-o",
+                "bin/vscc-cfg-darwin-amd64"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "build-linux",
+            "dependsOn": "build-darwin",
+            "options": {
+                "env": {
+                    "GOOS": "linux",
+                    "GOARCH": "amd64"
+                }
+            },
+            "command": "go",
+            "args": [
+                "build",
+                "-v",
+                "-o",
+                "bin/vscc-cfg-linux-amd64"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "build-windows",
+            "dependsOn": "build-linux",
+            "options": {
+                "env": {
+                    "GOOS": "windows",
+                    "GOARCH": "amd64"
+                }
+            },
+            "command": "go",
+            "args": [
+                "build",
+                "-v",
+                "-o",
+                "bin/vscc-cfg-windows-amd64.exe"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "build-all",
+            "dependsOn": "build-windows",
+            "problemMatcher": []
+        }
+    ]
+}
