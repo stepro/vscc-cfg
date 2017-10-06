@@ -11,50 +11,42 @@ import (
 
 // Document represents a configuration file
 type Document struct {
-	DocVersion string `yaml:"docVersion"`
-	Kind       string
+	Kind string
 }
 
-// FunctionPropertiesV1 represents configuration for a function
-type FunctionPropertiesV1 struct {
+// FunctionProperties represents configuration for a function
+type FunctionProperties struct {
 }
 
-// FunctionDocumentV1 represents a configuration file for a function
-type FunctionDocumentV1 struct {
-	DocVersion     string `yaml:"docVersion"`
-	Kind           string
+// FunctionDocument represents a configuration file for a function
+type FunctionDocument struct {
 	Name           string
 	Version        string
-	Language       string
 	Labels         map[string]string
-	Properties     FunctionPropertiesV1
-	Configurations map[string]FunctionPropertiesV1
+	Properties     FunctionProperties
+	Configurations map[string]FunctionProperties
 }
 
-// JobPropertiesV1 represents configuration for a job
-type JobPropertiesV1 struct {
+// JobProperties represents configuration for a job
+type JobProperties struct {
 }
 
-// JobDocumentV1 represents a configuration file for a job
-type JobDocumentV1 struct {
-	DocVersion     string `yaml:"docVersion"`
-	Kind           string
+// JobDocument represents a configuration file for a job
+type JobDocument struct {
 	Name           string
 	Version        string
-	Language       string
 	Labels         map[string]string
-	Properties     JobPropertiesV1
-	Configurations map[string]JobPropertiesV1
+	Properties     JobProperties
+	Configurations map[string]JobProperties
 }
 
-// ServicePropertiesV1 represents configuration for a service
-type ServicePropertiesV1 struct {
+// ServiceProperties represents configuration for a service
+type ServiceProperties struct {
 	Build struct {
 		Args       map[string]string
 		Context    string
 		Dockerfile string
 		Labels     map[string]string
-		Tags       []string
 		Target     string
 	}
 	Command    []string
@@ -79,22 +71,18 @@ type ServicePropertiesV1 struct {
 	TTY   *bool
 	User  string
 	Watch map[string]struct {
-		Action  string // restart or exec
-		Command []string
+		Action string // ignore, sync or rebuild
 	}
 	Workdir string
 }
 
-// ServiceDocumentV1 represents a configuration file for a service
-type ServiceDocumentV1 struct {
-	DocVersion     string `yaml:"docVersion"`
-	Kind           string
+// ServiceDocument represents a configuration file for a service
+type ServiceDocument struct {
 	Name           string
 	Version        string
-	Language       string
 	Labels         map[string]string
-	Properties     ServicePropertiesV1
-	Configurations map[string]ServicePropertiesV1
+	Properties     ServiceProperties
+	Configurations map[string]ServiceProperties
 }
 
 func main() {
@@ -103,46 +91,34 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fileName := "vscc.yaml"
-	if len(os.Args) > 2 {
-		fileName = os.Args[2]
-	}
-	bytes, _ := ioutil.ReadFile(fileName)
+	bytes, _ := ioutil.ReadFile(os.Args[2])
 
-	docVersion := "1.0.0"
 	kind := "service"
 	var doc Document
 	err = yaml.Unmarshal(bytes, &doc)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if doc.DocVersion != "" {
-		docVersion = doc.DocVersion
-	}
 	if doc.Kind != "" {
 		kind = doc.Kind
 	}
 
-	if docVersion != "1.0.0" {
-		log.Fatal("Unknown document version '" + docVersion + "'")
-	}
-
 	if kind == "function" {
-		var function FunctionDocumentV1
+		var function FunctionDocument
 		err = yaml.UnmarshalStrict(bytes, &function)
 		if err != nil {
 			log.Fatal(err)
 		}
 		err = tmpl.Execute(os.Stdout, function)
 	} else if kind == "job" {
-		var job JobDocumentV1
+		var job JobDocument
 		err = yaml.UnmarshalStrict(bytes, &job)
 		if err != nil {
 			log.Fatal(err)
 		}
 		err = tmpl.Execute(os.Stdout, job)
 	} else if kind == "service" {
-		var service ServiceDocumentV1
+		var service ServiceDocument
 		err = yaml.UnmarshalStrict(bytes, &service)
 		if err != nil {
 			log.Fatal(err)

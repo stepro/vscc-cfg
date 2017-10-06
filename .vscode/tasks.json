@@ -27,7 +27,7 @@
                 "build",
                 "-v",
                 "-o",
-                "bin/vscc-cfg-darwin-amd64"
+                "bin/Darwin/x86_64/vscc-cfg"
             ],
             "problemMatcher": []
         },
@@ -45,7 +45,7 @@
                 "build",
                 "-v",
                 "-o",
-                "bin/vscc-cfg-linux-amd64"
+                "bin/Linux/x86_64/vscc-cfg"
             ],
             "problemMatcher": []
         },
@@ -63,7 +63,7 @@
                 "build",
                 "-v",
                 "-o",
-                "bin/vscc-cfg-windows-amd64.exe"
+                "bin/Windows/x86_64/vscc-cfg.exe"
             ],
             "problemMatcher": []
         },
